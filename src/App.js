@@ -85,6 +85,23 @@ function App() {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
   }
   useEffect(scrollToBottom, [list]);
+  const requestBot = async(text)=>{
+    setTpying('typing...');
+    const response = await fetch("http://localhost:8000/api/echo",{
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method:"POST",
+      body:JSON.stringify({
+        text: text
+      })
+    });
+    const echoText = await response.json();
+    console.log(echoText);
+    botSay(echoText);
+    setTpying('Chat test');
+  }
   const botSay=text=>{
     push({
       avatar:"/logo.jpeg",
@@ -102,11 +119,7 @@ function App() {
       time:Date.now(),
       isOwn:true
     });
-    setTpying('typing...');
-    setTimeout(() => {
-      botSay(text);
-      setTpying('Chat test');
-    }, 1000);
+    requestBot(text);
   }
 
   return (
